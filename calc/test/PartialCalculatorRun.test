@@ -1,0 +1,39 @@
+*** Running PartialCalculator
+
+---------------------------------------------
+
+value() of 1+2 is 3.0
+
+PARSE TREE:
+
+Expression
+   'NUMBER'(1.0)
+   '+'
+   'NUMBER'(2.0)
+
+---------------------------------------------
+
+Defining pi as 3.142857142857143
+
+PARSE TREE:
+
+Definition
+   'IDENTIFIER'(pi)
+   '='
+   Expression
+      'NUMBER'(22.0)
+      '/'
+      'NUMBER'(7.0)
+
+---------------------------------------------
+
+Twice this pi is 6.285714285714286
+
+PARSE TREE:
+
+Expression
+   'NUMBER'(2.0)
+   '*'
+   'IDENTIFIER'(pi)
+
+---------------------------------------------

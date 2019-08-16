@@ -1,0 +1,378 @@
+<HTML>
+<HEAD>
+<TITLE>
+Calculator.html
+</TITLE>
+<LINK REL="STYLESHEET" TYPE="text/css" HREF="D:/hak/hlt/classes/resources/Hilite.Style.css">
+</HEAD>
+<BODY BGCOLOR="#CCCCFF" TEXT="BLACK">
+<CENTER>
+<TABLE BGCOLOR=white WIDTH=50% BORDER=5 CELLPADDING=20>
+<TR><TD ALIGN=CENTER>
+<SPAN STYLE="FONT-SIZE:XX-LARGE"><TT><B>Calculator.grm</B></TT></SPAN>
+<P>
+</TD></TR>
+</TABLE>
+</CENTER>
+<PRE>
+<SPAN STYLE="COLOR:WHITE"><EM>// FILE. . . . . /home/hak/hlt/src/hlt/language/jaccapps/calc/sources/Calculator.grm
+</EM></SPAN><SPAN STYLE="COLOR:WHITE"><EM>// EDIT BY . . . Hassan Ait-Kaci
+</EM></SPAN><SPAN STYLE="COLOR:WHITE"><EM>// ON MACHINE. . Hp-Dv7
+</EM></SPAN><SPAN STYLE="COLOR:WHITE"><EM>// STARTED ON. . Sun Oct 14 23:53:08 2012
+</EM></SPAN>
+
+</PRE>
+<HR>
+<CENTER>
+<TABLE BGCOLOR="WHITE" WIDTH=90% BORDER=1 CELLPADDING=10>
+<TR><TD><SPAN STYLE="COLOR:BLACK">
+
+  This is a grammar for a simple arithmetic calculator. Here are the <a
+  href="index.html">source files</a>.
+ 
+  <p>
+ 
+       
+<P><TABLE>
+<TR><TD VALIGN=TOP><STRONG>Copyright:</STRONG></TD><TD>&nbsp;</TD>
+<TD>&copy; <a href="http://www.hassan-ait-kaci.net/">by the author</a>
+</TD></tr>
+<TR><TD VALIGN=TOP><STRONG>Author:</STRONG></TD><TD>&nbsp;</TD>
+<TD><a href="mahlto:hak@acm.org">Hassan A&iuml;t-Kaci</a>
+</TD></tr>
+<TR><TD VALIGN=TOP><STRONG>Version:</STRONG></TD><TD>&nbsp;</TD>
+<TD>Last modified on Mon Mar 26 05:08:18 2018 by hak
+</TD></tr>
+</TABLE>
+
+</SPAN></TD></TR>
+</TABLE>
+</CENTER>
+<P>
+<PRE>
+
+
+%<SPAN STYLE="COLOR:RED"><STRONG>import</STRONG></SPAN> java.util.<SPAN STYLE="COLOR:#4400DD">HashMap</SPAN>;
+
+%access <SPAN STYLE="COLOR:MAGENTA"><STRONG>public</STRONG></SPAN>
+
+%start <SPAN STYLE="COLOR:#4400DD">Session</SPAN>
+
+%root  <SPAN STYLE="COLOR:#4400DD">Expression</SPAN>
+%root  <SPAN STYLE="COLOR:#4400DD">Definition</SPAN>
+
+%token <SPAN STYLE="COLOR:GREEN">NUMBER</SPAN> <SPAN STYLE="COLOR:GREEN">IDENTIFIER</SPAN>
+%left <SPAN STYLE="COLOR:GREEN"><EM>'+'</EM></SPAN> <SPAN STYLE="COLOR:GREEN"><EM>'-'</EM></SPAN>
+%left <SPAN STYLE="COLOR:GREEN"><EM>'*'</EM></SPAN> <SPAN STYLE="COLOR:GREEN"><EM>'/'</EM></SPAN>
+%right <SPAN STYLE="COLOR:GREEN">UMINUS</SPAN>
+
+%<SPAN STYLE="COLOR:GRAY">{</SPAN>
+  <SPAN STYLE="COLOR:#4400DD">HashMap</SPAN> defs = <SPAN STYLE="COLOR:BROWN"><STRONG>new</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">HashMap</SPAN><SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+%<SPAN STYLE="COLOR:GRAY">}</SPAN>
+
+%nodeprefix <SPAN STYLE="COLOR:GREEN"><EM>"Calculator"</EM></SPAN>
+%nodesuffix <SPAN STYLE="COLOR:GREEN"><EM>""</EM></SPAN>
+
+%nodeclass <SPAN STYLE="COLOR:MAGENTA"><STRONG>public</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">Definition</SPAN> <SPAN STYLE="COLOR:RED"><STRONG>implements</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">Cloneable</SPAN>
+<SPAN STYLE="COLOR:GRAY">{</SPAN>
+  <SPAN STYLE="COLOR:MAGENTA"><STRONG>private</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">String</SPAN> message;
+
+  <SPAN STYLE="COLOR:MAGENTA"><STRONG>public</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">String</SPAN> getMessage<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>
+    <SPAN STYLE="COLOR:GRAY">{</SPAN>
+      <SPAN STYLE="COLOR:BROWN"><STRONG>return</STRONG></SPAN> message;
+    <SPAN STYLE="COLOR:GRAY">}</SPAN>
+
+  <SPAN STYLE="COLOR:MAGENTA"><STRONG>public</STRONG></SPAN> <SPAN STYLE="COLOR:BLUE"><STRONG>void</STRONG></SPAN> setMessage<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#4400DD">String</SPAN> msg<SPAN STYLE="COLOR:GRAY">)</SPAN>
+    <SPAN STYLE="COLOR:GRAY">{</SPAN>
+      message = msg;
+    <SPAN STYLE="COLOR:GRAY">}</SPAN>
+<SPAN STYLE="COLOR:GRAY">}</SPAN>
+
+%%
+
+<SPAN STYLE="COLOR:#4400DD">Session</SPAN>
+        : <SPAN STYLE="COLOR:#4400DD">Actions</SPAN> <SPAN STYLE="COLOR:#4400DD">Exit</SPAN>
+        ;
+
+<SPAN STYLE="COLOR:#4400DD">Actions</SPAN>
+  	: <SPAN STYLE="COLOR:WHITE"><EM>/* empty */</EM></SPAN>
+        | <SPAN STYLE="COLOR:#4400DD">Actions</SPAN> <SPAN STYLE="COLOR:#4400DD">Action</SPAN>
+        ;
+
+
+</PRE>
+<HR>
+<CENTER>
+<TABLE BGCOLOR="WHITE" WIDTH=90% BORDER=1 CELLPADDING=10>
+<TR><TD><SPAN STYLE="COLOR:BLACK">
+
+  An action is either an expression, a definition, or an error, followed by a semicolon.
+ 
+</SPAN></TD></TR>
+</TABLE>
+</CENTER>
+<P>
+<PRE>
+
+<SPAN STYLE="COLOR:#4400DD">Action</SPAN>
+  	: <SPAN STYLE="COLOR:#4400DD">Expression</SPAN>
+        <SPAN STYLE="COLOR:GRAY">{</SPAN>
+          currentNode<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>.show<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>; <SPAN STYLE="COLOR:WHITE"><EM>// show the current parse tree
+</EM></SPAN>          <SPAN STYLE="COLOR:BROWN"><STRONG>if</STRONG></SPAN> <SPAN STYLE="COLOR:GRAY">(</SPAN>!<SPAN STYLE="COLOR:#4400DD">Double</SPAN>.isNaN<SPAN STYLE="COLOR:GRAY">(</SPAN>$1.nvalue<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN> <SPAN STYLE="COLOR:#4400DD">System</SPAN>.out.println<SPAN STYLE="COLOR:GRAY">(</SPAN>$1.nvalue<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+          <SPAN STYLE="COLOR:#4400DD">CalculatorTokenizer</SPAN>.prompt<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+        <SPAN STYLE="COLOR:GRAY">}</SPAN>
+          <SPAN STYLE="COLOR:GREEN"><EM>';'</EM></SPAN>
+        | <SPAN STYLE="COLOR:#4400DD">Definition</SPAN>
+        <SPAN STYLE="COLOR:GRAY">{</SPAN>
+          currentNode<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>.show<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>; <SPAN STYLE="COLOR:WHITE"><EM>// show the current parse tree
+</EM></SPAN>          <SPAN STYLE="COLOR:#4400DD">System</SPAN>.out.println<SPAN STYLE="COLOR:GRAY">(</SPAN>$1.getMessage<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+          <SPAN STYLE="COLOR:#4400DD">CalculatorTokenizer</SPAN>.prompt<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+        <SPAN STYLE="COLOR:GRAY">}</SPAN>
+          <SPAN STYLE="COLOR:GREEN"><EM>';'</EM></SPAN>
+	| error
+	<SPAN STYLE="COLOR:GRAY">{</SPAN>
+	  errorManager<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>.reportErrors<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GREEN">true</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+          <SPAN STYLE="COLOR:#4400DD">CalculatorTokenizer</SPAN>.prompt<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+	<SPAN STYLE="COLOR:GRAY">}</SPAN> <SPAN STYLE="COLOR:GREEN"><EM>';'</EM></SPAN>
+        ;
+
+
+
+</PRE>
+<HR>
+<CENTER>
+<TABLE BGCOLOR="WHITE" WIDTH=90% BORDER=1 CELLPADDING=10>
+<TR><TD><SPAN STYLE="COLOR:BLACK">
+
+  An expression is one of the following forms:
+ 
+</SPAN></TD></TR>
+</TABLE>
+</CENTER>
+<P>
+<PRE>
+
+<SPAN STYLE="COLOR:#4400DD">Expression</SPAN>
+        :
+         
+</PRE>
+<HR>
+<CENTER>
+<TABLE BGCOLOR="WHITE" WIDTH=90% BORDER=1 CELLPADDING=10>
+<TR><TD><SPAN STYLE="COLOR:BLACK">
+
+           A number is an expression.
+          
+</SPAN></TD></TR>
+</TABLE>
+</CENTER>
+<P>
+<PRE>
+
+          <SPAN STYLE="COLOR:GREEN">NUMBER</SPAN>
+        |
+	 
+</PRE>
+<HR>
+<CENTER>
+<TABLE BGCOLOR="WHITE" WIDTH=90% BORDER=1 CELLPADDING=10>
+<TR><TD><SPAN STYLE="COLOR:BLACK">
+
+            An identifier is an expression.
+           
+</SPAN></TD></TR>
+</TABLE>
+</CENTER>
+<P>
+<PRE>
+
+          <SPAN STYLE="COLOR:GREEN">IDENTIFIER</SPAN>
+        <SPAN STYLE="COLOR:GRAY">{</SPAN>
+          <SPAN STYLE="COLOR:#4400DD">Double</SPAN> value = <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#4400DD">Double</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>defs.get<SPAN STYLE="COLOR:GRAY">(</SPAN>$1.svalue<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+          <SPAN STYLE="COLOR:BROWN"><STRONG>if</STRONG></SPAN> <SPAN STYLE="COLOR:GRAY">(</SPAN>value == <SPAN STYLE="COLOR:GREEN">null</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>
+            <SPAN STYLE="COLOR:#4400DD">System</SPAN>.out.println<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GREEN"><EM>"*** Undefined identifier: "</EM></SPAN>+$1.svalue<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+          <SPAN STYLE="COLOR:BROWN"><STRONG>else</STRONG></SPAN>
+            $$.setNvalue<SPAN STYLE="COLOR:GRAY">(</SPAN>value.doubleValue<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+        <SPAN STYLE="COLOR:GRAY">}</SPAN>
+        |
+         
+</PRE>
+<HR>
+<CENTER>
+<TABLE BGCOLOR="WHITE" WIDTH=90% BORDER=1 CELLPADDING=10>
+<TR><TD><SPAN STYLE="COLOR:BLACK">
+
+	   An addition is an expression.
+	  
+</SPAN></TD></TR>
+</TABLE>
+</CENTER>
+<P>
+<PRE>
+
+          <SPAN STYLE="COLOR:#4400DD">Expression</SPAN> <SPAN STYLE="COLOR:GREEN"><EM>'+'</EM></SPAN> <SPAN STYLE="COLOR:#4400DD">Expression</SPAN>
+        <SPAN STYLE="COLOR:GRAY">{</SPAN>
+          $$.setNvalue<SPAN STYLE="COLOR:GRAY">(</SPAN>$1.nvalue<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN> + $3.nvalue<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+        <SPAN STYLE="COLOR:GRAY">}</SPAN>
+        | 
+	 
+</PRE>
+<HR>
+<CENTER>
+<TABLE BGCOLOR="WHITE" WIDTH=90% BORDER=1 CELLPADDING=10>
+<TR><TD><SPAN STYLE="COLOR:BLACK">
+
+	   A subtraction is an expression.
+	  
+</SPAN></TD></TR>
+</TABLE>
+</CENTER>
+<P>
+<PRE>
+
+          <SPAN STYLE="COLOR:#4400DD">Expression</SPAN> <SPAN STYLE="COLOR:GREEN"><EM>'-'</EM></SPAN> <SPAN STYLE="COLOR:#4400DD">Expression</SPAN>
+        <SPAN STYLE="COLOR:GRAY">{</SPAN>
+          $$.setNvalue<SPAN STYLE="COLOR:GRAY">(</SPAN>$1.nvalue<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN> - $3.nvalue<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+        <SPAN STYLE="COLOR:GRAY">}</SPAN>
+        | 
+	 
+</PRE>
+<HR>
+<CENTER>
+<TABLE BGCOLOR="WHITE" WIDTH=90% BORDER=1 CELLPADDING=10>
+<TR><TD><SPAN STYLE="COLOR:BLACK">
+
+	   A multiplication is an expression.
+	  
+</SPAN></TD></TR>
+</TABLE>
+</CENTER>
+<P>
+<PRE>
+
+          <SPAN STYLE="COLOR:#4400DD">Expression</SPAN> <SPAN STYLE="COLOR:GREEN"><EM>'*'</EM></SPAN> <SPAN STYLE="COLOR:#4400DD">Expression</SPAN>
+        <SPAN STYLE="COLOR:GRAY">{</SPAN>
+          $$.setNvalue<SPAN STYLE="COLOR:GRAY">(</SPAN>$1.nvalue<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN> * $3.nvalue<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+        <SPAN STYLE="COLOR:GRAY">}</SPAN>
+        | 
+	 
+</PRE>
+<HR>
+<CENTER>
+<TABLE BGCOLOR="WHITE" WIDTH=90% BORDER=1 CELLPADDING=10>
+<TR><TD><SPAN STYLE="COLOR:BLACK">
+
+	   A division is an expression.
+	  
+</SPAN></TD></TR>
+</TABLE>
+</CENTER>
+<P>
+<PRE>
+
+          <SPAN STYLE="COLOR:#4400DD">Expression</SPAN> <SPAN STYLE="COLOR:GREEN"><EM>'/'</EM></SPAN> <SPAN STYLE="COLOR:#4400DD">Expression</SPAN>
+        <SPAN STYLE="COLOR:GRAY">{</SPAN>
+          $$.setNvalue<SPAN STYLE="COLOR:GRAY">(</SPAN>$1.nvalue<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN> / $3.nvalue<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+        <SPAN STYLE="COLOR:GRAY">}</SPAN>
+        | 
+	 
+</PRE>
+<HR>
+<CENTER>
+<TABLE BGCOLOR="WHITE" WIDTH=90% BORDER=1 CELLPADDING=10>
+<TR><TD><SPAN STYLE="COLOR:BLACK">
+
+	   A negative expression is an expression.
+	  
+</SPAN></TD></TR>
+</TABLE>
+</CENTER>
+<P>
+<PRE>
+
+          <SPAN STYLE="COLOR:GREEN"><EM>'-'</EM></SPAN> <SPAN STYLE="COLOR:#4400DD">Expression</SPAN>        %prec <SPAN STYLE="COLOR:GREEN">UMINUS</SPAN>
+        <SPAN STYLE="COLOR:GRAY">{</SPAN>
+          $$.setNvalue<SPAN STYLE="COLOR:GRAY">(</SPAN>- $2.nvalue<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+        <SPAN STYLE="COLOR:GRAY">}</SPAN>
+        | 
+	 
+</PRE>
+<HR>
+<CENTER>
+<TABLE BGCOLOR="WHITE" WIDTH=90% BORDER=1 CELLPADDING=10>
+<TR><TD><SPAN STYLE="COLOR:BLACK">
+
+	   A parenthesized expression is an expression.
+	  
+</SPAN></TD></TR>
+</TABLE>
+</CENTER>
+<P>
+<PRE>
+
+          <SPAN STYLE="COLOR:GREEN"><EM>'('</EM></SPAN> <SPAN STYLE="COLOR:#4400DD">Expression</SPAN> <SPAN STYLE="COLOR:GREEN"><EM>')'</EM></SPAN>
+        <SPAN STYLE="COLOR:GRAY">{</SPAN>
+          $$.setNvalue<SPAN STYLE="COLOR:GRAY">(</SPAN>$2.nvalue<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+        <SPAN STYLE="COLOR:GRAY">}</SPAN>
+        ;
+
+
+
+</PRE>
+<HR>
+<CENTER>
+<TABLE BGCOLOR="WHITE" WIDTH=90% BORDER=1 CELLPADDING=10>
+<TR><TD><SPAN STYLE="COLOR:BLACK">
+
+  A definition stores the value of an expression as an identifier.
+ 
+</SPAN></TD></TR>
+</TABLE>
+</CENTER>
+<P>
+<PRE>
+
+<SPAN STYLE="COLOR:#4400DD">Definition</SPAN>
+        : <SPAN STYLE="COLOR:GREEN">IDENTIFIER</SPAN> <SPAN STYLE="COLOR:GREEN"><EM>'='</EM></SPAN> <SPAN STYLE="COLOR:#4400DD">Expression</SPAN>
+        <SPAN STYLE="COLOR:GRAY">{</SPAN>
+          defs.put<SPAN STYLE="COLOR:GRAY">(</SPAN>$1.svalue<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>,<SPAN STYLE="COLOR:BROWN"><STRONG>new</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">Double</SPAN><SPAN STYLE="COLOR:GRAY">(</SPAN>$3.nvalue<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+          $$.setNvalue<SPAN STYLE="COLOR:GRAY">(</SPAN>$3.nvalue<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+          $$.setSvalue<SPAN STYLE="COLOR:GRAY">(</SPAN>$1.svalue<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+          $$.setMessage<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GREEN"><EM>"*** Defined "</EM></SPAN>+$$.svalue<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>+<SPAN STYLE="COLOR:GREEN"><EM>" ("</EM></SPAN>+$$.nvalue<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>+<SPAN STYLE="COLOR:GREEN"><EM>")"</EM></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+        <SPAN STYLE="COLOR:GRAY">}</SPAN>
+        ;
+
+
+</PRE>
+<HR>
+<CENTER>
+<TABLE BGCOLOR="WHITE" WIDTH=90% BORDER=1 CELLPADDING=10>
+<TR><TD><SPAN STYLE="COLOR:BLACK">
+
+  Action for exiting the calculator.
+ 
+</SPAN></TD></TR>
+</TABLE>
+</CENTER>
+<P>
+<PRE>
+
+<SPAN STYLE="COLOR:#4400DD">Exit</SPAN>
+  	: <SPAN STYLE="COLOR:GREEN"><EM>'exit'</EM></SPAN>
+        <SPAN STYLE="COLOR:GRAY">{</SPAN>
+	  <SPAN STYLE="COLOR:#4400DD">System</SPAN>.out.println<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GREEN"><EM>"*** Bye bye!..."</EM></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+	  <SPAN STYLE="COLOR:#4400DD">System</SPAN>.exit<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#33AA33">0</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+	<SPAN STYLE="COLOR:GRAY">}</SPAN> <SPAN STYLE="COLOR:GREEN"><EM>';'</EM></SPAN>
+	;
+
+
+
+</PRE>
+<P>
+<HR>
+<P ALIGN="RIGHT"><SPAN STYLE="COLOR:#F07070"><EM>
+This file was generated on Mon Mar 26 09:21:26 CEST 2018 from file <SPAN STYLE="COLOR:BROWN"><KBD>Calculator.grm</KBD></SPAN><BR>by the <SPAN STYLE="COLOR:BROWN"><KBD>hlt.language.tools.Hilite</KBD></SPAN> Java tool written by <A HREF="mailto:hak@acm.org">Hassan A&iuml;t-Kaci</A></EM></SPAN>
+<P>
+<HR>
+</BODY>
+</HTML>

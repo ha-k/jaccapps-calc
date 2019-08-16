@@ -1,0 +1,186 @@
+// FILE. . . . . /home/hak/hlt/src/hlt/language/jaccapps/calc/sources/Calculator.grm
+// EDIT BY . . . Hassan Ait-Kaci
+// ON MACHINE. . Hp-Dv7
+// STARTED ON. . Sun Oct 14 23:53:08 2012
+
+/**
+ * This is a grammar for a simple arithmetic calculator. Here are the <a
+ * href="index.html">source files</a>.
+ *
+ * <p>
+ *
+ * @version     Last modified on Mon Mar 26 05:08:18 2018 by hak
+ * @author      <a href="mahlto:hak@acm.org">Hassan A&iuml;t-Kaci</a>
+ * @copyright   &copy; <a href="http://www.hassan-ait-kaci.net/">by the author</a>
+ */
+
+%import java.util.HashMap;
+
+%access public
+
+%start Session
+
+%root  Expression
+%root  Definition
+
+%token NUMBER IDENTIFIER
+%left '+' '-'
+%left '*' '/'
+%right UMINUS
+
+%{
+  HashMap defs = new HashMap();
+%}
+
+%nodeprefix "Calculator"
+%nodesuffix ""
+
+%nodeclass public Definition implements Cloneable
+{
+  private String message;
+
+  public String getMessage()
+    {
+      return message;
+    }
+
+  public void setMessage(String msg)
+    {
+      message = msg;
+    }
+}
+
+%%
+
+Session
+        : Actions Exit
+        ;
+
+Actions
+  	: /* empty */
+        | Actions Action
+        ;
+
+/**
+ * An action is either an expression, a definition, or an error, followed by a semicolon.
+ */
+Action
+  	: Expression
+        {
+          currentNode().show(); // show the current parse tree
+          if (!Double.isNaN($1.nvalue())) System.out.println($1.nvalue());
+          CalculatorTokenizer.prompt();
+        }
+          ';'
+        | Definition
+        {
+          currentNode().show(); // show the current parse tree
+          System.out.println($1.getMessage());
+          CalculatorTokenizer.prompt();
+        }
+          ';'
+	| error
+	{
+	  errorManager().reportErrors(true);
+          CalculatorTokenizer.prompt();
+	} ';'
+        ;
+
+
+/**
+ * An expression is one of the following forms:
+ */
+Expression
+        :
+         /**
+          * A number is an expression.
+          */
+          NUMBER
+        |
+	 /**
+           * An identifier is an expression.
+           */
+          IDENTIFIER
+        {
+          Double value = (Double)defs.get($1.svalue());
+          if (value == null)
+            System.out.println("*** Undefined identifier: "+$1.svalue());
+          else
+            $$.setNvalue(value.doubleValue());
+        }
+        |
+         /**
+	  * An addition is an expression.
+	  */
+          Expression '+' Expression
+        {
+          $$.setNvalue($1.nvalue() + $3.nvalue());
+        }
+        | 
+	 /**
+	  * A subtraction is an expression.
+	  */
+          Expression '-' Expression
+        {
+          $$.setNvalue($1.nvalue() - $3.nvalue());
+        }
+        | 
+	 /**
+	  * A multiplication is an expression.
+	  */
+          Expression '*' Expression
+        {
+          $$.setNvalue($1.nvalue() * $3.nvalue());
+        }
+        | 
+	 /**
+	  * A division is an expression.
+	  */
+          Expression '/' Expression
+        {
+          $$.setNvalue($1.nvalue() / $3.nvalue());
+        }
+        | 
+	 /**
+	  * A negative expression is an expression.
+	  */
+          '-' Expression        %prec UMINUS
+        {
+          $$.setNvalue(- $2.nvalue());
+        }
+        | 
+	 /**
+	  * A parenthesized expression is an expression.
+	  */
+          '(' Expression ')'
+        {
+          $$.setNvalue($2.nvalue());
+        }
+        ;
+
+
+/**
+ * A definition stores the value of an expression as an identifier.
+ */
+Definition
+        : IDENTIFIER '=' Expression
+        {
+          defs.put($1.svalue(),new Double($3.nvalue()));
+          $$.setNvalue($3.nvalue());
+          $$.setSvalue($1.svalue());
+          $$.setMessage("*** Defined "+$$.svalue()+" ("+$$.nvalue()+")");
+        }
+        ;
+
+/**
+ * Action for exiting the calculator.
+ */
+Exit
+  	: 'exit'
+        {
+	  System.out.println("*** Bye bye!...");
+	  System.exit(0);
+	} ';'
+	;
+
+
